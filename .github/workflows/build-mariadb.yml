@@ -25,6 +25,8 @@ jobs:
         run: |
           brew install cmake ninja bison pkgconf
           echo "$(brew --prefix bison)/bin" >> "$GITHUB_PATH"
+          # vorinstallierte Homebrew-Libs dürfen nicht ins Binary gelinkt werden
+          brew uninstall --ignore-dependencies --force gnutls nettle zstd openssl@3 libidn2 || true
 
       - name: Fetch MariaDB source
         run: |
@@ -62,8 +64,20 @@ jobs:
             fi
           done
 
+      - name: Verify no Homebrew references
+        run: |
+          bad=0
+          while read -r f; do
+            if file "$f" | grep -q 'Mach-O' && otool -L "$f" | grep -q -E '/opt/homebrew|/usr/local/'; then
+              echo "Homebrew reference in $f"; otool -L "$f" | grep -E '/opt/homebrew|/usr/local/'; bad=1
+            fi
+          done < <(find stage -type f)
+          exit $bad
+
       - name: Smoke test
-        run: stage/mariadb/bin/mariadbd --version
+        run: |
+          stage/mariadb/bin/mariadbd --version
+          stage/mariadb/bin/mariadb --version
 
       - name: Package
         run: |
