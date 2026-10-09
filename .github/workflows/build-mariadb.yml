@@ -109,6 +109,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          gh release delete "${{ inputs.version }}" --repo "${{ github.repository }}" --yes --cleanup-tag || true
           gh release create "${{ inputs.version }}" dist/* \
             --repo "${{ github.repository }}" \
             --title "${{ inputs.version }}" \
