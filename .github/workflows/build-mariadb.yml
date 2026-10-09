@@ -36,7 +36,8 @@ jobs:
         run: |
           cmake -S src -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DWITH_SSL=bundled \
+            -DWITH_SSL=bundled -DWITH_ZLIB=bundled -DWITH_PCRE=bundled \
+            -DCMAKE_IGNORE_PREFIX_PATH=/opt/homebrew \
             -DWITH_UNIT_TESTS=OFF \
             -DWITH_EMBEDDED_SERVER=OFF \
             -DWITH_WSREP=OFF \
