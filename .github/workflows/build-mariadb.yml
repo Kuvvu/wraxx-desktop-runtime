@@ -26,7 +26,7 @@ jobs:
           brew install cmake ninja bison pkgconf
           echo "$(brew --prefix bison)/bin" >> "$GITHUB_PATH"
           # vorinstallierte Homebrew-Libs dürfen nicht ins Binary gelinkt werden
-          brew uninstall --ignore-dependencies --force gnutls nettle zstd openssl@3 libidn2 || true
+          brew uninstall --ignore-dependencies --force gnutls nettle zstd libidn2 || true
 
       - name: Fetch MariaDB source
         run: |
@@ -38,8 +38,8 @@ jobs:
         run: |
           cmake -S src -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DWITH_SSL=bundled -DWITH_ZLIB=bundled -DWITH_PCRE=bundled \
-            -DCMAKE_IGNORE_PREFIX_PATH=/opt/homebrew \
+            -DWITH_SSL=system -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)" -DOPENSSL_USE_STATIC_LIBS=ON \
+            -DWITH_ZLIB=bundled -DWITH_PCRE=bundled \
             -DWITH_UNIT_TESTS=OFF \
             -DWITH_EMBEDDED_SERVER=OFF \
             -DWITH_WSREP=OFF \
