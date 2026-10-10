@@ -58,6 +58,9 @@ jobs:
         run: |
           cmake --install build --prefix "$PWD/stage/mariadb"
           rm -rf stage/mariadb/mysql-test stage/mariadb/sql-bench stage/mariadb/include
+          rm -rf stage/mariadb/mariadb-test stage/mariadb/symbols stage/mariadb/lib
+          find stage/mariadb -name '*.pdb' -delete
+          rm -f stage/mariadb/bin/server.lib stage/mariadb/bin/mariadb-test.exe stage/mariadb/bin/mysqltest.exe
 
       - name: Smoke test
         shell: bash
